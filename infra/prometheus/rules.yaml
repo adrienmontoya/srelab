@@ -1,0 +1,36 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: srelab-rules
+  namespace: monitoring
+  labels:
+    release: prometheus
+spec:
+  groups:
+  - name: srelab.rules
+    rules:
+    - alert: HighErrorRate
+      expr: |
+        (
+          increase(http_requests_total{handler="/items", status=~"5.."}[5m])
+          /
+          increase(http_requests_total{handler="/items"}[5m])
+        ) > 0.01
+      for: 2m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Taux d'erreur HTTP >1% sur /items (SLO dépassé)"
+
+    - alert: HighLatency
+      expr: |
+        histogram_quantile(0.95,
+          sum by (le, handler)(
+            rate(http_request_duration_seconds_bucket[5m])
+          )
+        ) > 0.5
+      for: 2m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Latence P95 >500ms (SLO dépassé)"
