@@ -14,9 +14,10 @@ spec:
     spec:
       containers:
       - name: fastapi
-        image: ghcr.io/adrienmontoya/srelab/fastapi-demo:latest
+        image: fastapi-demo:local
         ports:
         - containerPort: 8000
+        imagePullPolicy: Never
         env:
         - name: DATABASE_URL
           value: "postgresql://user:pwd@postgres:5432/demo"
