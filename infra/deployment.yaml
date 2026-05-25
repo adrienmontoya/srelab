@@ -35,3 +35,4 @@ spec:
   - name: http
     port: 8000
     targetPort: 8000
+  # test auto-sync Mon May 25 10:21:05 AM -05 2026
